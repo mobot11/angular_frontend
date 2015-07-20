@@ -23,7 +23,6 @@ router.post('/', function (req, res) {
 	var weight = req.body.weight;
 	var position = req.body.position;
 	var objName = name.replace(/\s+/g, '');
-	var objId = name.replace(/\s+/g, '');
 	objName = new Player ({
 		name: name,
 		height: height,
