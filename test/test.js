@@ -21,7 +21,7 @@ chai.use(chaiHttp);
 describe('/player/:id', function () {
 	it('should respond to a get request', function(done) {
 		chai.request('localhost:8080')
-		.get('/player/:id')
+		.get('/player/:Kobe_Bryant')
 		.end(function (err, res) {
 			expect(err).to.be.null
 			expect(res).to.have.status(200);

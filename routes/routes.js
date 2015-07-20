@@ -2,10 +2,18 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var router = express.Router();
-var Player = require('../models/models.js').Player
+var Player = require('../models/models.js')
 
 
 router.get('/:id',function (req, res) {
+	var name = req.params.id;
+	var propName = name.replace(/_/g, " ");
+	var idName = propName.slice(1, propName.length);
+	Player.findOne({'name': idName }, function(err, player) {
+		if (err) return handleError(err);
+		console.log(player);
+	})
+
 	res.json({msg: 'get request completed'})
 })
 router.post('/', function (req, res) {
@@ -15,6 +23,7 @@ router.post('/', function (req, res) {
 	var weight = req.body.weight;
 	var position = req.body.position;
 	var objName = name.replace(/\s+/g, '');
+	var objId = name.replace(/\s+/g, '');
 	objName = new Player ({
 		name: name,
 		height: height,
