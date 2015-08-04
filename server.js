@@ -1,16 +1,20 @@
+var mongoose = require('mongoose');
 var express = require('express');
-var bodyParser = require('body-parser');
-var fs = require('fs');
-var routes = require('./routes/routes');
-
 var app = express();
-var port = 8080;
 
-app.use(bodyParser.urlencoded({ extended: false}));
-app.use(bodyParser.json());
 
-app.use('/player', routes);
 
-app.listen(port,function() {
-	console.log('server started on port ' + port);
-});
+app.use(express.static(__dirname + '/build'));
+
+var playerRoutes = express.Router();
+
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost');
+console.log('creating connection to the database');
+
+require('./routes/player_routes')(playerRoutes);
+
+app.use('/api', playerRoutes);
+
+app.listen(process.env.PORT || 3000, function() {
+	console.log('server running on port ' + (process.env.PORT || 3000));
+})
