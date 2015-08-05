@@ -5,7 +5,13 @@
 	<title>Rest Frontend</title>
 </head>
 <body data-ng-app='playerApp'>
+	<main data-ng-controller='playerController'> 
+	  {{greeting}} 
+	  <div>
+	  <input type="text" data-ng-model="greeting"></input>
+	  </div>
+	</main>
+
 	<script src="bundle.js"></script>
-	<h1>im working</h1>
 </body>
 </html>
