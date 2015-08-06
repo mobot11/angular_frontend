@@ -38,6 +38,8 @@ module.exports = function(app) {
 			$http.put('/api/players/' + player._id, player)
 			.then(function(res) {
 				player.editing = false;
+				console.log(res.data);
+				$scope.playerArray = angular.copy($scope.players);
 			}, function(res) {
 				player.editing = false;
 				console.log(res.data);
@@ -46,11 +48,6 @@ module.exports = function(app) {
 
 		$scope.cancel = function(player) {
 			player.editing = false;
-			// var myForm = player._id + "form";
-			// console.log(myForm);
-			// $scope.myForm.name.$rollbackViewValue();
-			// $scope.myForm.height.$rollbackViewValue();
-			// $scope.myForm.team.$rollbackViewValue();
 			$scope.players = angular.copy($scope.playerArray);
 		}
 	}]);

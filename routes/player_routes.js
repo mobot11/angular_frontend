@@ -26,8 +26,8 @@ router.post('/players', function (req, res) {
 
 router.put('/players/:id', function (req, res) {
 	var playerId = req.params.id;
-	console.log(req.params);
-	console.log(req.body);
+	// console.log(req.params);
+	// console.log(req.body);
 	Player.findOneAndUpdate({_id: playerId}, req.body, function(err,data) {
 		if(err) {
 			console.log(err);
