@@ -28479,8 +28479,24 @@
 					console.log(res.data);
 				});
 			};
+
+			$scope.cancel = function(player) {
+				player.editing = false;
+				// var myForm = player._id + "form";
+				// console.log(myForm);
+				// $scope.myForm.name.$rollbackViewValue();
+				// $scope.myForm.height.$rollbackViewValue();
+				// $scope.myForm.team.$rollbackViewValue();
+				$scope.players = angular.copy($scope.playerArray);
+			}
 		}]);
 	};
+
+
+
+
+
+
 
 /***/ }
 /******/ ]);
