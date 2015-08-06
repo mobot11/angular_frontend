@@ -4,12 +4,39 @@
 	<meta charset="UTF-8">
 	<title>Rest Frontend</title>
 </head>
-<body data-ng-app='playerApp'>
-	<main data-ng-controller='playerController'> 
-	  {{greeting}} 
-	  <div>
-	  <input type="text" data-ng-model="greeting"></input>
-	  </div>
+<body data-ng-app='playersApp'>
+	<h1>favorite nba players</h1>
+	<main data-ng-controller='playersController' data-ng-init="getAll()"> 
+    <h2>create your very own nba player!</h2>	 
+	  <form name="newPlayerForm" data-ng-submit="create(newPlayer)">
+	  	<label for="newPlayerName">Name: </label>
+	  	<input type="text" required name="newPlayerName" data-ng-model="newPlayer.name">
+	  	<label for="newPlayerHeight">Height: </label>
+	  	<input type="text" required name="newPlayerHeight" data-ng-model="newPlayer.height">
+	  	<label for="newPlayerTeam">Team: </label>
+	  	<input type="text" required name="newPlayerTeam" data-ng-model="newPlayer.team">
+	  	<button type="submit" data-ng-disabled="newPlayerForm.$invalid">Create Player</button>
+	  </form>
+	  <ul id="playerList" data-ng-repeat="player in playerArray">
+	  	<li>
+	  		{{player.name}}
+
+	  		<form data-ng-if="player.editing" name="{{note._id}}form" data-ng-submit="update(player)">
+	  		<input type="text" data-ng-model="player.name">
+	  		<input type="text" data-ng-model="player.height">
+	  		<input type="text" data-ng-model="player.team">
+	  		<button type="submit">Save</button>
+	  		<button data-ng-click="player.editing = false">Cancel</button>
+	  		</form>
+	  		<button data-ng-if="!player.editing" data-ng-click="player.editing = true">Edit</button>
+	  		<button data-ng-click="destroy(player)">Delete</button>
+	  		<ul>
+	  		  <li>{{player.height}}</li>
+	  		  <li>{{player.team}}</li>
+	  		</ul>
+	  	</li>
+	  </ul>
+	  <div my-player></div>
 	</main>
 
 	<script src="bundle.js"></script>

@@ -46,14 +46,9 @@
 
 	__webpack_require__(1);
 
-	var playerApp = angular.module('playerApp', []);
+	var playersApp = angular.module('playersApp', [])
 
-	var playerController = playerApp.controller('playerController', ['$scope', function($scope) {
-		$scope.greeting = 'welcome to my NBA players App!'
-		$scope.alertGreeting = function() {
-	    
-		}
-	}])
+	__webpack_require__(2)(playersApp);
 
 
 /***/ },
@@ -28424,6 +28419,68 @@
 	})(window, document);
 
 	!window.angular.$$csp() && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function(app) {
+		__webpack_require__(3)(app);
+	};
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	module.exports = function(app) {
+		app.controller('playersController', ['$scope', '$http', function($scope, $http) {
+			$scope.players = [];
+			$scope.errors = [];
+			$scope.playerArray = [];
+
+			$scope.getAll = function() {
+				$http.get('/api/players')
+				.then(function(res) {
+	        $scope.players = res.data;
+	        angular.copy($scope.players, $scope.playerArray);
+				}, function(res) {
+					$scope.errors.push({msg: 'could not retrieve players'});
+					console.log(res.data);
+				})
+			}
+
+			$scope.create = function(player) {
+				$scope.newPlayer = null;
+				$http.post('/api/players', player)
+				.then(function(res) {
+					$scope.players.push(res.data);
+				}, function(res) {
+					console.log(res);
+					$scope.errors.push(res.data)
+				});
+			};
+			$scope.destroy = function(player) {
+				$http.delete('/api/players/' + player._id)
+				.then(function(res) {
+					$scope.players.splice($scope.players.indexOf(player), 1);
+				}, function(res) {
+					console.log(res.data);
+					$scope.errors.push(res.data)
+				});
+			};
+			$scope.update = function(player) {
+				$http.put('/api/players/' + player._id, player)
+				.then(function(res) {
+					player.editing = false;
+				}, function(res) {
+					player.editing = false;
+					console.log(res.data);
+				});
+			};
+		}]);
+	};
 
 /***/ }
 /******/ ]);

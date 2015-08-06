@@ -1,10 +1,5 @@
 require('angular/angular');
 
-var playerApp = angular.module('playerApp', []);
+var playersApp = angular.module('playersApp', [])
 
-var playerController = playerApp.controller('playerController', ['$scope', function($scope) {
-	$scope.greeting = 'welcome to my NBA players App!'
-	$scope.alertGreeting = function() {
-    
-	}
-}])
+require('./players/players')(playersApp);

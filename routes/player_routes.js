@@ -25,16 +25,18 @@ router.post('/players', function (req, res) {
 });
 
 router.put('/players/:id', function (req, res) {
-	var updatedPlayer = req.body;
-	delete updatedPlayer._id;
-
-	Player.update({'_id': req.params.id}, updatedPlayer, function (err,data) {
+	var playerId = req.params.id;
+	console.log(req.params);
+	console.log(req.body);
+	Player.findOneAndUpdate({_id: playerId}, req.body, function(err,data) {
 		if(err) {
 			console.log(err);
-			return res.status(500).json({msg: 'internal server error'});
+			res.status(500).json({msg: 'Internal Server Error'})
 		}
-		res.json({msg: 'success'});
-	});
+		if(data) {
+			res.json({msg: 'player was updated'})
+		}
+	})
 });
 
 router.delete('/players/:id', function (req, res) {
