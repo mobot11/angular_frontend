@@ -6,18 +6,17 @@
 </head>
 <body data-ng-app='playersApp'>
 	<h1>favorite nba players</h1>
-	<div data-dummy-directive></div>
 	<main data-ng-controller='playersController' data-ng-init="getAll()"> 
     <h2>create your very own nba player!</h2>	 
-	  <form name="newPlayerForm" data-ng-submit="create(newPlayer)">
-	  	<label for="newPlayerName">Name: </label>
-	  	<input type="text" required name="newPlayerName" data-ng-model="newPlayer.name">
-	  	<label for="newPlayerHeight">Height: </label>
-	  	<input type="text" required name="newPlayerHeight" data-ng-model="newPlayer.height">
-	  	<label for="newPlayerTeam">Team: </label>
-	  	<input type="text" required name="newPlayerTeam" data-ng-model="newPlayer.team">
-	  	<button type="submit" data-ng-disabled="newPlayerForm.$invalid">Create Player</button>
-	  </form>
+    <div data-player-form-directive 
+    save="create(player)"
+    label-text-one="name:"
+    label-text-two="height:"
+    label-text-three="team:"
+    button-text="create new player"
+    player="newPlayer">
+
+    </div>
 	  <ul id="playerList" data-ng-repeat="player in players">
 	  	<li>
 	  		{{player.name}}

@@ -1,0 +1,9 @@
+<form name="playerForm" data-ng-submit="save({player: player})">
+  <label for="name">{{labelTextOne}}</label>
+  <input type="text" name="name" data-ng-model="player.name" required>
+  <label for="height">{{labelTextTwo}}</label>
+  <input type="text" name="height" data-ng-model="player.height" required>
+  <label for="team">{{labelTextThree}}</label>
+  <input type="text" name="team" data-ng-model="player.team" required>
+  <button type="submit" data-ng-disabled="playerForm.$invalid">{{buttonText}}</button>
+</form>

@@ -28517,10 +28517,13 @@
 		app.directive('dummyDirective', function() {
 			return {
 				restrict: 'CA',
-				template: '<h2>Dummy Directive</h2>'
+				replace: true,
+				template: '<section><h2>{{greeting}}</h2><input type="text" data-ng-model="greeting"></section>'
 			};
 		});
 	};
+
+	//replace will replace whatever element we put it on with template
 
 /***/ },
 /* 6 */
@@ -28530,10 +28533,35 @@
 
 	module.exports = function(app) {
 		__webpack_require__(7)(app);
+		__webpack_require__(8)(app);
 	};
 
 /***/ },
 /* 7 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = function(app) {
+		app.directive('playerFormDirective', function () {
+	    return{
+	    	restrict: 'AC',
+	    	replace: true,
+	    	templateUrl: '/js/players/templates/player_form_template.html',
+	    	scope: {
+	    		save: '&',
+	    		buttonText: '@',
+	    		labelTextOne: '@',
+	    		labelTextTwo: '@',
+	    		labelTextThree: '@',
+	    		player: '='
+	    	}
+	    }
+		});
+	};
+
+/***/ },
+/* 8 */
 /***/ function(module, exports) {
 
 	module.exports = function(app) {
