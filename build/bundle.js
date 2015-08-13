@@ -45,10 +45,12 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
+	__webpack_require__(2);
+	__webpack_require__(4);
 
-	var playersApp = angular.module('playersApp', [])
+	var playersApp = angular.module('playersApp', ['services', 'directives'])
 
-	__webpack_require__(2)(playersApp);
+	__webpack_require__(6)(playersApp);
 
 
 /***/ },
@@ -28426,60 +28428,150 @@
 
 	'use strict';
 
-	module.exports = function(app) {
-		__webpack_require__(3)(app);
-	};
+	var services = module.exports = exports = angular.module('services', []);
+
+	__webpack_require__(3)(services);
+
+
 
 /***/ },
 /* 3 */
 /***/ function(module, exports) {
 
+	'use strict';
+
 	module.exports = function(app) {
-		app.controller('playersController', ['$scope', '$http', function($scope, $http) {
+	  app.factory('RESTResource', ['$http', function($http) {
+	  	var handleError = function(callback) {
+	  		return function(res) {
+	  			console.log(res.data);
+	  			callback(res.data);
+	  		};
+	  	};
+
+	  	var handleSuccess = function(callback) {
+	  		return function(res) {
+	  			callback(null, res.data)
+	  		};
+	  	};
+
+	  	return function(resourceName) {
+	  	var handleRequest = function(method, data, callback) {
+	  		var url = '/api/' + resourceName;
+	  		if (data && data._id) url += '/' + data._id;
+
+	  		$http({
+	  			method: method,
+	  			url: url,
+	  			data: data,
+	  		})
+	  		.then(handleSuccess(callback), handleError(callback));
+	  	};
+
+	  		return {
+	  			getAll: function(callback) {
+	  				handleRequest('GET', null, callback);
+	  			},
+
+	  			save: function(data, callback) {
+	  				handleRequest('POST', data, callback);
+	  			},
+
+	  			update: function(data, callback) {
+	  				handleRequest('PUT', data, callback);
+	  			},
+
+	  			destroy: function(data, callback) {
+	  				handleRequest('DELETE', data, callback);
+	  			}
+	  		}
+	  	};
+	  }]);
+	};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var directives = angular.module('directives', []);
+	__webpack_require__(5)(directives);
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	module.exports = function(app) {
+		app.directive('dummyDirective', function() {
+			return {
+				restrict: 'CA',
+				template: '<h2>Dummy Directive</h2>'
+			};
+		});
+	};
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function(app) {
+		__webpack_require__(7)(app);
+	};
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	module.exports = function(app) {
+		app.controller('playersController', ['$scope', 'RESTResource', function($scope, resource) {
 			$scope.players = [];
 			$scope.errors = [];
 			$scope.playerArray = [];
+			var Player = new resource('players');
 
 			$scope.getAll = function() {
-				$http.get('/api/players')
-				.then(function(res) {
-	        $scope.players = res.data;
-	        angular.copy($scope.players, $scope.playerArray);
-				}, function(res) {
-					$scope.errors.push({msg: 'could not retrieve players'});
-					console.log(res.data);
-				})
-			}
+	      Player.getAll(function(err, data) {
+	      	if (err) return $scope.errors.push({msg: 'error getting players'});
+	        $scope.players = data;
+	        $scope.playerArray = angular.copy($scope.players);
+	      });
+			};
 
 			$scope.create = function(player) {
 				$scope.newPlayer = null;
-				$http.post('/api/players', player)
-				.then(function(res) {
-					$scope.players.push(res.data);
-				}, function(res) {
-					console.log(res);
-					$scope.errors.push(res.data)
+				Player.save(player, function(err, data) {
+	        if (err) return $scope.errors.push({msg: 'could not save player' + player.name});
+					$scope.players.push(data)
 				});
 			};
+
 			$scope.destroy = function(player) {
-				$http.delete('/api/players/' + player._id)
-				.then(function(res) {
-					$scope.players.splice($scope.players.indexOf(player), 1);
-				}, function(res) {
-					console.log(res.data);
-					$scope.errors.push(res.data)
-				});
+	      Player.destroy(player, function(err, data) {
+	      if (err) return $scope.errors.push({msg: 'could not delete player: ' + player.name })	
+			  $scope.players.splice($scope.players.indexOf(player), 1);
+	      })
+			
 			};
 			$scope.update = function(player) {
-				$http.put('/api/players/' + player._id, player)
-				.then(function(res) {
-					player.editing = false;
-					console.log(res.data);
+	      Player.update(player, function(err, data) {
+	      	if(err) return $scope.errors.push({msg: 'could not update: ' + player.name});
 					$scope.playerArray = angular.copy($scope.players);
-				}, function(res) {
 					player.editing = false;
-					console.log(res.data);
-				});
+	      });
 			};
 
 			$scope.cancel = function(player) {

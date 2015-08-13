@@ -1,49 +1,39 @@
 module.exports = function(app) {
-	app.controller('playersController', ['$scope', '$http', function($scope, $http) {
+	app.controller('playersController', ['$scope', 'RESTResource', function($scope, resource) {
 		$scope.players = [];
 		$scope.errors = [];
 		$scope.playerArray = [];
+		var Player = new resource('players');
 
 		$scope.getAll = function() {
-			$http.get('/api/players')
-			.then(function(res) {
-        $scope.players = res.data;
-        angular.copy($scope.players, $scope.playerArray);
-			}, function(res) {
-				$scope.errors.push({msg: 'could not retrieve players'});
-				console.log(res.data);
-			})
-		}
+      Player.getAll(function(err, data) {
+      	if (err) return $scope.errors.push({msg: 'error getting players'});
+        $scope.players = data;
+        $scope.playerArray = angular.copy($scope.players);
+      });
+		};
 
 		$scope.create = function(player) {
 			$scope.newPlayer = null;
-			$http.post('/api/players', player)
-			.then(function(res) {
-				$scope.players.push(res.data);
-			}, function(res) {
-				console.log(res);
-				$scope.errors.push(res.data)
+			Player.save(player, function(err, data) {
+        if (err) return $scope.errors.push({msg: 'could not save player' + player.name});
+				$scope.players.push(data)
 			});
 		};
+
 		$scope.destroy = function(player) {
-			$http.delete('/api/players/' + player._id)
-			.then(function(res) {
-				$scope.players.splice($scope.players.indexOf(player), 1);
-			}, function(res) {
-				console.log(res.data);
-				$scope.errors.push(res.data)
-			});
+      Player.destroy(player, function(err, data) {
+      if (err) return $scope.errors.push({msg: 'could not delete player: ' + player.name })	
+		  $scope.players.splice($scope.players.indexOf(player), 1);
+      })
+		
 		};
 		$scope.update = function(player) {
-			$http.put('/api/players/' + player._id, player)
-			.then(function(res) {
-				player.editing = false;
-				console.log(res.data);
+      Player.update(player, function(err, data) {
+      	if(err) return $scope.errors.push({msg: 'could not update: ' + player.name});
 				$scope.playerArray = angular.copy($scope.players);
-			}, function(res) {
 				player.editing = false;
-				console.log(res.data);
-			});
+      });
 		};
 
 		$scope.cancel = function(player) {

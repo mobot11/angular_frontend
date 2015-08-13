@@ -6,6 +6,7 @@
 </head>
 <body data-ng-app='playersApp'>
 	<h1>favorite nba players</h1>
+	<div data-dummy-directive></div>
 	<main data-ng-controller='playersController' data-ng-init="getAll()"> 
     <h2>create your very own nba player!</h2>	 
 	  <form name="newPlayerForm" data-ng-submit="create(newPlayer)">
@@ -28,7 +29,7 @@
 	  		<button type="submit">Save</button>
 	  		<button data-ng-click="cancel(player)">Cancel</button>
 	  		</form>
-	  		<button data-ng-if="!player.editing" data-ng-click="player.editing = true">Edit</button>
+	  		<button data-ng-if="!player.editing" ng-disabled="button" data-ng-click="player.editing = true; button=false">Edit</button>
 	  		<button data-ng-click="destroy(player)">Delete</button>
 	  		<ul>
 	  		  <li>{{player.height}}</li>
