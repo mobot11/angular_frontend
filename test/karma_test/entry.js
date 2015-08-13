@@ -1,0 +1,1 @@
+require(__dirname + '/players_controller_tests')

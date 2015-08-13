@@ -6,6 +6,7 @@
 </head>
 <body data-ng-app='playersApp'>
 	<h1>favorite nba players</h1>
+	<div data-dummy-directive></div>
 	<main data-ng-controller='playersController' data-ng-init="getAll()"> 
     <h2>create your very own nba player!</h2>	 
 	  <form name="newPlayerForm" data-ng-submit="create(newPlayer)">
@@ -17,18 +18,18 @@
 	  	<input type="text" required name="newPlayerTeam" data-ng-model="newPlayer.team">
 	  	<button type="submit" data-ng-disabled="newPlayerForm.$invalid">Create Player</button>
 	  </form>
-	  <ul id="playerList" data-ng-repeat="player in playerArray">
+	  <ul id="playerList" data-ng-repeat="player in players">
 	  	<li>
 	  		{{player.name}}
 
-	  		<form data-ng-if="player.editing" name="{{note._id}}form" data-ng-submit="update(player)">
-	  		<input type="text" data-ng-model="player.name">
-	  		<input type="text" data-ng-model="player.height">
-	  		<input type="text" data-ng-model="player.team">
+	  		<form data-ng-if="player.editing" name="{{player._id}}form" data-ng-submit="update(player)">
+	  		<input name="name" type="text" data-ng-model="player.name">
+	  		<input name="height" type="text" data-ng-model="player.height">
+	  		<input name="team" type="text" data-ng-model="player.team">
 	  		<button type="submit">Save</button>
-	  		<button data-ng-click="player.editing = false">Cancel</button>
+	  		<button data-ng-click="cancel(player)">Cancel</button>
 	  		</form>
-	  		<button data-ng-if="!player.editing" data-ng-click="player.editing = true">Edit</button>
+	  		<button data-ng-if="!player.editing" ng-disabled="button" data-ng-click="player.editing = true">Edit</button>
 	  		<button data-ng-click="destroy(player)">Delete</button>
 	  		<ul>
 	  		  <li>{{player.height}}</li>
